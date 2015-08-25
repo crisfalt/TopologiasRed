@@ -11,4 +11,6 @@ package LogicaNegocio;
  */
 public class TopologiaAnillo {
     
+    //Ak are todo lo relacionado a la tipologia anillo
+    
 }

@@ -11,4 +11,6 @@ package LogicaNegocio;
  */
 public class TopologiaMalla {
     
+    //Ak are todo lo relacionado a la tipologia malla
+    
 }

@@ -11,4 +11,6 @@ package LogicaNegocio;
  */
 public class TopologiaEstrella {
     
+    //Ak are todo lo relacionado a la tipologia estrella
+    
 }
