@@ -6,6 +6,7 @@
 package Principal;
 
 import IGU.Splash;
+import IGU.TopologiaIgu;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UIManager;
@@ -30,6 +31,7 @@ public class Principal {
                         Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 objSplash.dispose();
+                TopologiaIgu objTopologiaIgu = new TopologiaIgu();
     }
     
     private static void cargarLookAndFeel() {

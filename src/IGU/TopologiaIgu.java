@@ -24,7 +24,7 @@ public class TopologiaIgu extends JFrame implements ActionListener {
 	private JFrame objFrame;
         
         public TopologiaIgu() {
-                super( "INTERACTIVA" );
+                super( "TOPOLOGIAS DE RED" );
 		//objManagerFrame = new ManagerFrame();
 		setDefaultCloseOperation( WindowConstants.EXIT_ON_CLOSE );
 		setResizable( false );
@@ -37,16 +37,22 @@ public class TopologiaIgu extends JFrame implements ActionListener {
 		menuArchivo = new JMenu( "Archivo" );
                 itemsArchivo = new JMenuItem[2];
                 itemsArchivo[ 0 ] = new JMenuItem( "Nuevo" );
+                itemsArchivo[ 0 ].addActionListener(this);
                 itemsArchivo[ 1 ] = new JMenuItem( "Salir" );
+                itemsArchivo[ 1 ].addActionListener(this);
                 menuAyuda = new JMenu[2];
                 menuAyuda[ 0 ] = new JMenu("Caracteristicas");
                 menuAyuda[ 1 ] = new JMenu("Ayuda");
                 itemsCaracteristicas = new JMenuItem[2];
                 itemsCaracteristicas[ 0 ] = new JMenuItem( "Ventajas" );
+                itemsCaracteristicas[ 0 ].addActionListener(this);
                 itemsCaracteristicas[ 1 ] = new JMenuItem( "Desventajas" );
+                itemsCaracteristicas[ 1 ].addActionListener(this);
                 itemsAyuda = new JMenuItem[ 2 ];
                 itemsAyuda[ 0 ] = new JMenuItem("Ayuda");
+                itemsAyuda[ 0 ].addActionListener(this);
                 itemsAyuda[ 1 ] = new JMenuItem("Acerca De");
+                itemsAyuda[ 1 ].addActionListener(this);
                 
         }
         
@@ -62,10 +68,12 @@ public class TopologiaIgu extends JFrame implements ActionListener {
                 barMenu.add( menuAyuda[ 1 ] );
                 add( barMenu , BorderLayout.NORTH );
                 setVisible( true );
-		setSize( 500 , 300 );
+		setSize( 700 , 600 );
         }
         
         public void actionPerformed( ActionEvent evento ) {
-                
+                if( evento.getSource() == itemsArchivo[ 1 ] ) {
+                        System.exit( 0 );
+                }
         }
 }
