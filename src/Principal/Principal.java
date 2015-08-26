@@ -19,7 +19,7 @@ public class Principal {
     public static void main( String args[]){
         cargarLookAndFeel();
                 Splash objSplash = new Splash();
-                objSplash.setImagen( "Imagenes/BannerDiscretasII.jpg" );
+                objSplash.setImagen( "Imagenes/splash.gif" );
                 objSplash.generarSplash();
                 Splash.barraProgreso.setIndeterminate( true );
                 Thread hiloProgreso = new Thread();

@@ -30,6 +30,7 @@ public class Splash extends JWindow {
         }
 
         public void setImagen( final String urlImagen ) {
+                //System.out.println("nombre imagen es: " + urlImagen);
                 imagenFondo = new ImageIcon( urlImagen );
         }
 
