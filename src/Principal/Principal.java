@@ -5,6 +5,7 @@
  */
 package Principal;
 
+import IGU.ConfiguracionIgu;
 import IGU.Splash;
 import IGU.TopologiaIgu;
 import java.util.logging.Level;
@@ -32,6 +33,7 @@ public class Principal {
                 }
                 objSplash.dispose();
                 TopologiaIgu objTopologiaIgu = new TopologiaIgu();
+                //ConfiguracionIgu objConfiguracionIgu = new ConfiguracionIgu();
     }
     
     private static void cargarLookAndFeel() {
