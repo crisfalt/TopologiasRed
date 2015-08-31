@@ -28,6 +28,7 @@ public class TopologiaIgu extends JFrame implements ActionListener {
         private int nodos;
         private RegistrosIGU objRegistrosIGU;
         private GraficadorAutomata objGraficadorAutomata;
+        private CaracteristicasIGU objCaracteristicasIGU;
         
         public TopologiaIgu() {
                 super( "TOPOLOGIAS DE RED" );
@@ -77,7 +78,7 @@ public class TopologiaIgu extends JFrame implements ActionListener {
                 barMenu.add( menuAyuda[ 1 ] );
                 add( barMenu , BorderLayout.NORTH );
                 setVisible( true );
-		setSize( 700 , 600 );
+		setSize( 300 , 300 );
         }
         
         public void setTopologia( final String newTopologia ) {
@@ -94,6 +95,8 @@ public class TopologiaIgu extends JFrame implements ActionListener {
                         objConfiguracionIgu.setVisible(true);
                         topologia = objConfiguracionIgu.getTopologia();
                         nodos = objConfiguracionIgu.getNodos();
+                        objRegistrosIGU.imprimirMensaje("\nTopologia : " + topologia);
+                        objRegistrosIGU.imprimirMensaje("\nCon : " + nodos + " Dispositivos conectados");
                         if( topologia.equals("Arbol") ) {
                                 System.out.println("TopoloIGU:construir arbol");
                                 Vector nodosPasivos = new Vector();
@@ -110,6 +113,10 @@ public class TopologiaIgu extends JFrame implements ActionListener {
                 }
                 if( evento.getSource() == itemsArchivo[ 1 ] ) {
                         System.exit( 0 );
+                }
+                if( evento.getSource() == itemsCaracteristicas[ 0 ] ) {
+                        objCaracteristicasIGU = new CaracteristicasIGU(this, true, topologia);
+                        objCaracteristicasIGU.setVisible(true);
                 }
         }
         

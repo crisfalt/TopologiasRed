@@ -70,7 +70,8 @@ public class RegistrosIGU extends JDialog implements ActionListener {
                 add( panelEtiqueta , BorderLayout.NORTH );
                 add( panelAreaTexto , BorderLayout.CENTER );
                 add( panelBoton , BorderLayout.SOUTH );
-                pack();
+                //pack();
+                setSize(280,300);
                 setVisible( true );
                 setTitle( ".:Registros Logs:." );
 //                setLocationRelativeTo( null );

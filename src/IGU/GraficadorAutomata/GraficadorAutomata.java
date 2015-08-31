@@ -14,6 +14,7 @@ import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
 import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.UndirectedSparseMultigraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
@@ -83,12 +84,7 @@ public class GraficadorAutomata extends JFrame implements ActionListener {
         }
 
         private void construirArbol( final int cantCP , final Vector nodosP , final int nodosA ) {
-                /*System.out.println("GA::construir arbol");
-                System.out.println("GA::cantCp : " + cantCP);
-                System.out.println("GA::cant vector" + nodosP.size());
-                System.out.println("GA::nodosA " + nodosA);*/
-                
-                Graph<Estado , Enlace> grafo = new DirectedSparseMultigraph<Estado , Enlace>();
+                Graph<Estado , Enlace> grafo = new UndirectedSparseMultigraph<Estado , Enlace>();
                 for( int index = 0 ; index < nodosP.size() ; index++ ) {
                         totalEstados += Integer.parseInt(nodosP.get(index).toString());
                 }
@@ -105,7 +101,7 @@ public class GraficadorAutomata extends JFrame implements ActionListener {
                 Estado estado = estadosAsignados.get( 0 );
                 for( int indiceNS = 1 ; indiceNS <= (cantCP+nodosA) ; indiceNS++ ) {
                         Estado estadoSiguiente = estadosAsignados.get( indiceNS );
-                        grafo.addEdge( new Enlace( 0 , indiceNS , "Enlace "+contEnlace ) , estado , estadoSiguiente , EdgeType.DIRECTED );
+                        grafo.addEdge( new Enlace( 0 , indiceNS , "Enlace "+contEnlace ) , estado , estadoSiguiente , EdgeType.UNDIRECTED );
                         contEnlace++;
                 }
                 System.out.println("GA::nodosA " + indicador);
@@ -115,14 +111,14 @@ public class GraficadorAutomata extends JFrame implements ActionListener {
                         for( int j = 0 ; j < Integer.parseInt(nodosP.get(indexP-1).toString()) ; j++ ) {
                                 indicador++;
                                 Estado estadoSiguiente = estadosAsignados.get( indicador );
-                                grafo.addEdge( new Enlace( indexP , j , "Enlace "+contEnlace ) , estadoP , estadoSiguiente , EdgeType.DIRECTED );
+                                grafo.addEdge( new Enlace( indexP , j , "Enlace "+contEnlace ) , estadoP , estadoSiguiente , EdgeType.UNDIRECTED );
                                 contEnlace++;
                         }
                 }
                 Layout<Estado , Enlace> layout = new CircleLayout<Estado , Enlace>( grafo );
-                layout.setSize( new Dimension( 300 , 300 ) );
+                layout.setSize( new Dimension( 500 , 500 ) );
                 VisualizationViewer<Estado , Enlace> visualizador = new VisualizationViewer( layout );
-                visualizador.setPreferredSize( new Dimension( 350 , 350 ) );
+                visualizador.setPreferredSize( new Dimension( 550 , 550 ) );
                 Transformer<Estado , Paint> pintarVertices = new Transformer<Estado , Paint>() {
                         public Paint transform( Estado i ) {
                                 for( int index = 1 ; index <= cantCP ; index++ ) {
@@ -209,6 +205,31 @@ public class GraficadorAutomata extends JFrame implements ActionListener {
         
         private void construirAutomata() {
                 Graph<Estado , Enlace> grafo = new DirectedSparseMultigraph<Estado , Enlace>();
+                if( tipoTopologia == "Bus" || tipoTopologia == "BUS" || tipoTopologia == "bus" ) {
+                        totalEstados = (cantNodos * 2) + 2;
+                        System.out.println("BUS:total NOdos " + totalEstados);
+                        for( int indiceEstados = 0 ; indiceEstados < totalEstados ; indiceEstados++ ) {
+                                Estado estado = new Estado( indiceEstados );
+                                estadosAsignados.add( estado );
+                        }
+                        int cont = 1;
+                        int contEnlace = 1;
+                        System.out.println("BUS:NOdos out" + (totalEstados-cantNodos));
+                        for( int indiceNA = 0 ; indiceNA < (totalEstados-(cantNodos+1)) ; indiceNA++ ) {
+                                Estado estado = estadosAsignados.get( indiceNA );
+                                Estado estadoSiguiente = estadosAsignados.get( indiceNA+1 );
+                                grafo.addEdge( new Enlace( indiceNA , cont , "BUS" ) , estado , estadoSiguiente , EdgeType.DIRECTED );
+                        }
+                        int indicador = ((totalEstados/2)+1);
+                        for( int indexE = 1 ; indexE <= ((totalEstados/2)-1) ; indexE++ ) {
+                                contEnlace = 1;
+                                Estado estado = estadosAsignados.get( indexE );
+                                Estado estadoSiguiente = estadosAsignados.get( indicador );
+                                grafo.addEdge( new Enlace( indexE , cont , "Enlace "+contEnlace ) , estado , estadoSiguiente , EdgeType.DIRECTED );
+                                indicador++;
+                        }
+                        
+                }
                 if( tipoTopologia == "Malla" || tipoTopologia == "MALLA" || tipoTopologia == "malla" ) {
                         for( int indiceEstados = 0 ; indiceEstados < cantNodos ; indiceEstados++ ) {
                                 Estado estado = new Estado( indiceEstados );
@@ -280,11 +301,25 @@ public class GraficadorAutomata extends JFrame implements ActionListener {
                         grafo.addEdge( new Enlace( 0 , cantNodos , "Enlace "+contEnlace ) , estadosAsignados.get(0) , estadosAsignados.get(cantNodos-1) , EdgeType.DIRECTED );
                 }
                 Layout<Estado , Enlace> layout = new CircleLayout<Estado , Enlace>( grafo );
-                layout.setSize( new Dimension( 300 , 300 ) );
+                layout.setSize( new Dimension( 500 , 500 ) );
                 VisualizationViewer<Estado , Enlace> visualizador = new VisualizationViewer( layout );
-                visualizador.setPreferredSize( new Dimension( 350 , 350 ) );
+                visualizador.setPreferredSize( new Dimension( 550 , 550 ) );
                 Transformer<Estado , Paint> pintarVertices = new Transformer<Estado , Paint>() {
                         public Paint transform( Estado i ) {
+                                //System.out.println("Pintando bus : " + (totalEstados/2) );
+                                for( int indexE = 1 ; indexE <= ((totalEstados/2)-1) ; indexE++ ) {
+                                        if( tipoTopologia.equals("Bus") && i.getIdEstado() == indexE ) {
+                                                return Color.RED;
+                                        }
+                                }
+                                if( tipoTopologia.equals("Bus") ) {
+                                        if( i.getIdEstado() == 0 || i.getIdEstado() == (totalEstados/2) ) {
+                                                return Color.BLACK;
+                                        }
+                                        else {
+                                                return Color.LIGHT_GRAY;
+                                        }
+                                }
                                 if( i.getIdEstado() == 0 && tipoTopologia.equals("Estrella") ) {
                                         return Color.GREEN;
                                 }
