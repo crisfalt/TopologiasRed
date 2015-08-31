@@ -35,6 +35,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import org.apache.commons.collections15.Transformer;
 
 /**
@@ -61,18 +62,151 @@ public class GraficadorAutomata extends JFrame implements ActionListener {
         private Graphics imagenAutomata;
         private String tipoTopologia;
         private int cantNodos;
+        private int totalEstados;
 
         public GraficadorAutomata( final int nodos , final String tipoTopologia ) {
                 setDefaultCloseOperation( JFrame.DO_NOTHING_ON_CLOSE );
                 this.cantNodos = nodos;
                 this.tipoTopologia = tipoTopologia;
                 estadosAsignados = new ArrayList<Estado>();
+                totalEstados = 0;
                 //nodosAutomata = new ArrayList<Nodo>();
                 construirAutomata();
         }
 
-        
+        public GraficadorAutomata( final int cantCP , final Vector nodosP , final int nodosA ) {
+                System.out.println("GA::construir arbol");
+                setDefaultCloseOperation( JFrame.DO_NOTHING_ON_CLOSE );
+                estadosAsignados = new ArrayList<Estado>();
+                //nodosAutomata = new ArrayList<Nodo>();
+                construirArbol( cantCP,nodosP,nodosA);
+        }
 
+        private void construirArbol( final int cantCP , final Vector nodosP , final int nodosA ) {
+                /*System.out.println("GA::construir arbol");
+                System.out.println("GA::cantCp : " + cantCP);
+                System.out.println("GA::cant vector" + nodosP.size());
+                System.out.println("GA::nodosA " + nodosA);*/
+                
+                Graph<Estado , Enlace> grafo = new DirectedSparseMultigraph<Estado , Enlace>();
+                for( int index = 0 ; index < nodosP.size() ; index++ ) {
+                        totalEstados += Integer.parseInt(nodosP.get(index).toString());
+                }
+                totalEstados += nodosA;
+                totalEstados += cantCP;
+                totalEstados += 1;
+                int indicador = nodosA + cantCP;
+                System.out.println(totalEstados);
+                for( int indiceEstados = 0 ; indiceEstados < totalEstados ; indiceEstados++ ) {
+                        Estado estado = new Estado( indiceEstados );
+                        estadosAsignados.add( estado );
+                }
+                int contEnlace = 1;
+                Estado estado = estadosAsignados.get( 0 );
+                for( int indiceNS = 1 ; indiceNS <= (cantCP+nodosA) ; indiceNS++ ) {
+                        Estado estadoSiguiente = estadosAsignados.get( indiceNS );
+                        grafo.addEdge( new Enlace( 0 , indiceNS , "Enlace "+contEnlace ) , estado , estadoSiguiente , EdgeType.DIRECTED );
+                        contEnlace++;
+                }
+                System.out.println("GA::nodosA " + indicador);
+                for( int indexP =  1 ; indexP <= cantCP ; indexP++ ) {
+                        contEnlace = 1;
+                        Estado estadoP = estadosAsignados.get( indexP );
+                        for( int j = 0 ; j < Integer.parseInt(nodosP.get(indexP-1).toString()) ; j++ ) {
+                                indicador++;
+                                Estado estadoSiguiente = estadosAsignados.get( indicador );
+                                grafo.addEdge( new Enlace( indexP , j , "Enlace "+contEnlace ) , estadoP , estadoSiguiente , EdgeType.DIRECTED );
+                                contEnlace++;
+                        }
+                }
+                Layout<Estado , Enlace> layout = new CircleLayout<Estado , Enlace>( grafo );
+                layout.setSize( new Dimension( 300 , 300 ) );
+                VisualizationViewer<Estado , Enlace> visualizador = new VisualizationViewer( layout );
+                visualizador.setPreferredSize( new Dimension( 350 , 350 ) );
+                Transformer<Estado , Paint> pintarVertices = new Transformer<Estado , Paint>() {
+                        public Paint transform( Estado i ) {
+                                for( int index = 1 ; index <= cantCP ; index++ ) {
+                                        if( i.getIdEstado() == index ) {
+                                                return Color.ORANGE;
+                                        }
+                                }
+                                if( i.getIdEstado() == 0 ) {
+                                        return Color.GREEN;
+                                }
+                                else {
+                                        return Color.BLUE;
+                                }
+                        }
+                };
+                /*Transformer<Estado , Paint> pintarBordeEstados = new Transformer<Estado, Paint>() {
+                        public Paint transform( Estado i ) {
+                                Color colorBorde = new Color( 100 );
+                                for( int indiceEstados = 0 ; indiceEstados < numEstadosFinales ; indiceEstados++ ) {
+                                        if( listaEstadosFinales.get( indiceEstados ) == i.getIdEstado() && i.getIdEstado() == 0 ) {
+                                                        colorBorde = Color.GREEN;
+                                        }
+                                         else {
+                                                colorBorde = Color.BLACK;
+                                         }
+                                }
+                                return colorBorde;
+                        }
+                };*/
+                Transformer<Enlace , Paint> pintarEnlaces = new Transformer<Enlace , Paint>() {
+                        public Paint transform( Enlace i ) {
+                                return Color.RED;
+                        }
+                };
+                Transformer<Enlace , Font> cambiarFuenteEnlaces = new Transformer<Enlace , Font>() {
+
+                        public Font transform( Enlace i ) {
+                                Font fuenteEnlaces = new Font( Font.SANS_SERIF , Font.ITALIC , 12 );
+                                return fuenteEnlaces;
+                        }
+                        
+                };
+                Transformer<Estado , Font> cambiarFuenteEstado = new Transformer<Estado , Font>() {
+                        public Font transform( Estado i ) {
+                                Font fuenteEstados = new Font( Font.SANS_SERIF , Font.ITALIC , 10 );
+                                return fuenteEstados;
+                        }
+
+                };
+                visualizador.getRenderContext().setEdgeDrawPaintTransformer( pintarEnlaces );
+                visualizador.getRenderContext().setEdgeFontTransformer( cambiarFuenteEnlaces );
+                visualizador.getRenderContext().setEdgeLabelTransformer( new ToStringLabeller() );
+               visualizador.getRenderContext().setVertexFillPaintTransformer( pintarVertices );
+//                visualizador.getRenderContext().setVertexDrawPaintTransformer( pintarBordeEstados );
+                visualizador.getRenderContext().setVertexLabelTransformer( new ToStringLabeller() );
+                visualizador.getRenderContext().setVertexFontTransformer( cambiarFuenteEstado );
+                visualizador.getRenderContext().setArrowFillPaintTransformer( pintarEnlaces );
+                visualizador.getRenderer().getVertexLabelRenderer().setPosition( Position.CNTR );
+                DefaultModalGraphMouse modoUsoMouse = new DefaultModalGraphMouse();
+//                modoUsoMouse.setMode( ModalGraphMouse.Mode.TRANSFORMING );
+                visualizador.addKeyListener ( modoUsoMouse.getModeKeyListener () );
+                visualizador.setGraphMouse( modoUsoMouse );
+                visualizador.setBackground( Color.WHITE );
+                visualizador.setForeground( Color.BLACK );
+                getContentPane().add( visualizador );
+                // Let's add a menu for changing mouse modes
+                menuBar = new JMenuBar();
+                menuArchivo = new JMenu( "Archivo" );
+                itemsArchivo = new JMenuItem( "Salir" );
+                itemsArchivo.addActionListener( this );
+                menuArchivo.add( itemsArchivo );
+                modeMenu = modoUsoMouse.getModeMenu(); // Obtain mode menu from the mouse
+                modeMenu.setText( "Modo Seleccion Mouse" );
+                modeMenu.setIcon( null ); // I'm using this in a main menu
+                modeMenu.setPreferredSize( new Dimension( 160 ,20 ) ); // Change the size
+                menuBar.add( menuArchivo );
+                menuBar.add( modeMenu );
+                setJMenuBar( menuBar );
+                modoUsoMouse.setMode( ModalGraphMouse.Mode.EDITING );
+                pack();
+                setTitle( nombreFrame );
+                setVisible(true);
+        }
+        
         private void construirAutomata() {
                 Graph<Estado , Enlace> grafo = new DirectedSparseMultigraph<Estado , Enlace>();
                 if( tipoTopologia == "Malla" || tipoTopologia == "MALLA" || tipoTopologia == "malla" ) {
@@ -149,14 +283,9 @@ public class GraficadorAutomata extends JFrame implements ActionListener {
                 layout.setSize( new Dimension( 300 , 300 ) );
                 VisualizationViewer<Estado , Enlace> visualizador = new VisualizationViewer( layout );
                 visualizador.setPreferredSize( new Dimension( 350 , 350 ) );
-                /*Transformer<Estado , Paint> pintarVertices = new Transformer<Estado , Paint>() {
+                Transformer<Estado , Paint> pintarVertices = new Transformer<Estado , Paint>() {
                         public Paint transform( Estado i ) {
-                                for( int indiceEstados = 0 ; indiceEstados < cantNodos ; indiceEstados++ ) {
-                                        if( listaEstadosFinales.get( indiceEstados ) == i.getIdEstado() ) {
-                                                return Color.LIGHT_GRAY;
-                                        }
-                                }
-                                if( i.getIdEstado() == 0 ) {
+                                if( i.getIdEstado() == 0 && tipoTopologia.equals("Estrella") ) {
                                         return Color.GREEN;
                                 }
                                 else {
@@ -164,7 +293,7 @@ public class GraficadorAutomata extends JFrame implements ActionListener {
                                 }
                         }
                 };
-                Transformer<Estado , Paint> pintarBordeEstados = new Transformer<Estado, Paint>() {
+                /*Transformer<Estado , Paint> pintarBordeEstados = new Transformer<Estado, Paint>() {
                         public Paint transform( Estado i ) {
                                 Color colorBorde = new Color( 100 );
                                 for( int indiceEstados = 0 ; indiceEstados < numEstadosFinales ; indiceEstados++ ) {
@@ -201,7 +330,7 @@ public class GraficadorAutomata extends JFrame implements ActionListener {
                 visualizador.getRenderContext().setEdgeDrawPaintTransformer( pintarEnlaces );
                 visualizador.getRenderContext().setEdgeFontTransformer( cambiarFuenteEnlaces );
                 visualizador.getRenderContext().setEdgeLabelTransformer( new ToStringLabeller() );
-//                visualizador.getRenderContext().setVertexFillPaintTransformer( pintarVertices );
+                visualizador.getRenderContext().setVertexFillPaintTransformer( pintarVertices );
 //                visualizador.getRenderContext().setVertexDrawPaintTransformer( pintarBordeEstados );
                 visualizador.getRenderContext().setVertexLabelTransformer( new ToStringLabeller() );
                 visualizador.getRenderContext().setVertexFontTransformer( cambiarFuenteEstado );

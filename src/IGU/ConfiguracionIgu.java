@@ -115,19 +115,20 @@ public class ConfiguracionIgu extends JDialog implements ActionListener {
                                                 nodosCA = Integer.parseInt(in);
                                         }
                                         else {
-                                                in = JOptionPane.showInputDialog(this, "Nodos conectados al Concentrador Pasivo " + (i+1) );
+                                                in = JOptionPane.showInputDialog(this, "Nodos conectados al Concentrador Pasivo " + (i) );
                                                 numNodos.add( Integer.parseInt(in) );
                                         }
                                 }
                         }
                         System.out.println(topologias);
                         System.out.println(nodos);
+                        System.out.println(nodosCA);
                         //this.setVisible(false);
                         this.dispose();
                 }
                 if( evento.getSource() == cmbTopologia ) {
                         if( (topologias = cmbTopologia.getSelectedItem().toString()).equals("Arbol") ) {
-                             lblNodos.setText("Cantidad de Concentradores :  ");
+                             lblNodos.setText("# Concentradores Pasivos:  ");
                              
                         }
                 }
@@ -142,7 +143,7 @@ public class ConfiguracionIgu extends JDialog implements ActionListener {
         }
         
         public int getNodosA() {
-                return nodos;
+                return nodosCA;
         }
         
         public Vector getNodosP() {

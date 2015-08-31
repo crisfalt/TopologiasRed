@@ -8,6 +8,7 @@ import IGU.GraficadorAutomata.GraficadorAutomata;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
 import javax.swing.*;
 
 /**
@@ -94,16 +95,26 @@ public class TopologiaIgu extends JFrame implements ActionListener {
                         topologia = objConfiguracionIgu.getTopologia();
                         nodos = objConfiguracionIgu.getNodos();
                         if( topologia.equals("Arbol") ) {
-                                
+                                System.out.println("TopoloIGU:construir arbol");
+                                Vector nodosPasivos = new Vector();
+                                nodosPasivos = objConfiguracionIgu.getNodosP();
+                                int nodosActivo = objConfiguracionIgu.getNodosA();
+                                pintarAutomata( nodos, nodosPasivos,nodosActivo);
+                        }
+                        else {
+                                pintarAutomata( nodos, topologia);
                         }
                         System.out.println(topologia);
                         System.out.println(nodos);
-                        pintarAutomata( nodos, topologia);
                         
                 }
                 if( evento.getSource() == itemsArchivo[ 1 ] ) {
                         System.exit( 0 );
                 }
+        }
+        
+        private void pintarAutomata( final int cantCP , final Vector nodosP , final int nodosA ) {
+                GraficadorAutomata objGraficadorAutomata = new GraficadorAutomata( cantCP , nodosP, nodosA );
         }
         
         private void pintarAutomata( final int cantNodos , final String tipoTopologia ) {
